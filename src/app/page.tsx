@@ -1,65 +1,111 @@
-import Image from "next/image";
+'use client'
+
+import { useEffect } from 'react'
+import { createClient } from '@/lib/supabase/client'
+import { useAppStore } from '@/stores/app-store'
+
+import LoginScreen from '@/components/auth/LoginScreen'
+import VerifyScreen from '@/components/auth/VerifyScreen'
+import WelcomeScreen from '@/components/onboarding/WelcomeScreen'
+import OnboardingScreen from '@/components/onboarding/OnboardingScreen'
+import GeneratingScreen from '@/components/onboarding/GeneratingScreen'
+import AppNav from '@/components/dashboard/AppNav'
+import Dashboard from '@/components/dashboard/Dashboard'
+import LogPage from '@/components/log/LogPage'
+import PlanPage from '@/components/plan/PlanPage'
+import ProgressPage from '@/components/progress/ProgressPage'
+import SettingsPage from '@/components/settings/SettingsPage'
+import ProfilePage from '@/components/profile/ProfilePage'
 
 export default function Home() {
+  const {
+    screen, page,
+    setScreen, setEmail, setProfile, setAppData,
+    setFoodLogs, setExerciseLogs, setWeightLogs, setPlan,
+  } = useAppStore()
+
+  // On mount: check for existing Supabase session
+  useEffect(() => {
+    const supabase = createClient()
+
+    const loadUserData = async (userId: string, userEmail: string) => {
+      const [
+        { data: profile },
+        { data: appData },
+        { data: foodLogs },
+        { data: exerciseLogs },
+        { data: weightLogs },
+        { data: planRow },
+      ] = await Promise.all([
+        supabase.from('profiles').select('*').eq('user_id', userId).single(),
+        supabase.from('app_data').select('*').eq('user_id', userId).single(),
+        supabase.from('food_logs').select('*').eq('user_id', userId).order('date', { ascending: false }).limit(60),
+        supabase.from('exercise_logs').select('*').eq('user_id', userId).order('date', { ascending: false }).limit(60),
+        supabase.from('weight_logs').select('*').eq('user_id', userId).order('date', { ascending: false }).limit(60),
+        supabase.from('plans').select('plan_data').eq('user_id', userId).order('generated_at', { ascending: false }).limit(1).single(),
+      ])
+
+      setEmail(userEmail)
+
+      if (profile?.onboarding_complete) {
+        setProfile(profile)
+        setAppData(appData)
+        setFoodLogs(foodLogs || [])
+        setExerciseLogs(exerciseLogs || [])
+        setWeightLogs(weightLogs || [])
+        if (planRow?.plan_data) setPlan(planRow.plan_data)
+        setScreen('app')
+      } else if (profile) {
+        setProfile(profile)
+        setScreen('welcome')
+      } else {
+        setScreen('welcome')
+      }
+    }
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        loadUserData(session.user.id, session.user.email || '')
+      } else {
+        setScreen('auth')
+      }
+    })
+
+    // Listen for auth changes (e.g. magic link callback)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user && screen === 'auth') {
+        loadUserData(session.user.id, session.user.email || '')
+      }
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  // Loading state
+  if (screen === 'loading') {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0f0f0f' }}>
+        <div className="hc-gen-spinner" />
+      </div>
+    )
+  }
+
+  if (screen === 'auth') return <LoginScreen />
+  if (screen === 'verify') return <VerifyScreen />
+  if (screen === 'welcome') return <WelcomeScreen />
+  if (screen === 'onboarding') return <OnboardingScreen />
+  if (screen === 'generating') return <GeneratingScreen />
+
+  // App shell
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+    <div>
+      <AppNav />
+      {page === 'dashboard' && <Dashboard />}
+      {page === 'log' && <LogPage />}
+      {page === 'plan' && <PlanPage />}
+      {page === 'progress' && <ProgressPage />}
+      {page === 'settings' && <SettingsPage />}
+      {page === 'profile' && <ProfilePage />}
     </div>
-  );
+  )
 }
