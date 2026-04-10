@@ -100,7 +100,7 @@ export default function WelcomeScreen() {
 
         <div className="hc-welcome-cta">
           <button className="hc-auth-btn" style={{ maxWidth: 320 }} onClick={() => setScreen('onboarding')}>
-            Let's Get Started →
+            Let&apos;s Get Started →
           </button>
         </div>
       </div>

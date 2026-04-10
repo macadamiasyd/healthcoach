@@ -6,7 +6,7 @@ import { useAppStore } from '@/stores/app-store'
 import { ONBOARD_STEPS } from '@/lib/types'
 
 export default function OnboardingScreen() {
-  const { email, setScreen, setProfile, setAppData, setGenStep, setPage } = useAppStore()
+  const { email, setScreen, setProfile, setAppData, setGenStep } = useAppStore()
   const [step, setStep] = useState(0)
   const [answers, setAnswers] = useState<Record<string, string | string[]>>({})
 

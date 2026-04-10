@@ -60,7 +60,7 @@ export default function LoginScreen() {
         )}
 
         <div style={{ marginTop: '1.5rem', fontSize: '0.75rem', color: 'var(--muted)', lineHeight: 1.6 }}>
-          We'll email you a magic link to sign in — no password needed.
+          We&apos;ll email you a magic link to sign in — no password needed.
         </div>
       </div>
     </div>

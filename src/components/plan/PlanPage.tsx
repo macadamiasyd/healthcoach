@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useAppStore } from '@/stores/app-store'
 import { generateFullPlan } from '@/lib/plan-generator'
-import type { HealthPlan, MealItem } from '@/lib/types'
+import type { MealItem } from '@/lib/types'
 
 const PHASE_COLORS = ['#7a9e7e', '#c9a84c', '#c4622d', '#5b7fa6']
 
@@ -13,7 +13,7 @@ function badgeClass(t: string) {
 }
 
 export default function PlanPage() {
-  const { plan, profile, setPlan, setGenStep, setScreen, setPage } = useAppStore()
+  const { plan, profile, setPlan, setGenStep } = useAppStore()
   const [activePhaseTab, setActivePhaseTab] = useState<Record<number, string>>({})
   const [regenerating, setRegenerating] = useState(false)
 

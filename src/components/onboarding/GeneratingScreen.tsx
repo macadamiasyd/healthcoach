@@ -16,7 +16,7 @@ const GEN_STEPS = [
 ]
 
 export default function GeneratingScreen() {
-  const { profile, appData, genStep, setGenStep, setPlan, setScreen, setPage, setFoodLogs, setExerciseLogs, setWeightLogs } = useAppStore()
+  const { profile, genStep, setGenStep, setPlan, setScreen, setPage } = useAppStore()
   const started = useRef(false)
 
   useEffect(() => {
