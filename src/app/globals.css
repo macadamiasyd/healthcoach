@@ -538,15 +538,113 @@ body {
 .hc-snack-card .hc-pillar-name { font-size: 0.76rem; font-weight: 500; color: var(--hc-ink); }
 .hc-snack-card .hc-pillar-text { font-size: 0.82rem; line-height: 1.5; color: #555; }
 
+/* ── MOBILE BOTTOM NAV ── */
+.hc-mobile-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--hc-surface);
+  border-top: 1px solid var(--hc-border);
+  z-index: 400;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.hc-mobile-nav-tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 0.55rem 0.3rem;
+  background: none;
+  border: none;
+  color: var(--hc-muted);
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: color 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.hc-mobile-nav-tab.active { color: var(--hc-gold); }
+.hc-mobile-nav-icon { display: flex; align-items: center; justify-content: center; }
+.hc-mobile-nav-label { font-size: 0.58rem; letter-spacing: 0.03em; }
+
 /* ── RESPONSIVE ── */
-@media (max-width: 580px) {
+@media (max-width: 640px) {
+  /* Bottom nav visible, top tabs hidden */
+  .hc-mobile-nav { display: flex; }
+  .hc-nav-tabs { display: none; }
+  .hc-phase-badge { display: none; }
+
+  /* Slim top bar */
+  .hc-app-nav { padding: 0 0.75rem; min-height: 48px; }
+  .hc-app-logo { padding: 0.75rem 0.75rem 0.75rem 0; font-size: 0.9rem; }
+
+  /* Page bottom padding clears bottom nav */
+  .hc-page-inner { padding: 1.2rem 1rem calc(4.5rem + env(safe-area-inset-bottom)); }
+  .hc-plan-inner { padding: 1.5rem 1rem calc(4.5rem + env(safe-area-inset-bottom)); }
+
+  /* Plan subnav sticks below slimmer top bar */
+  .hc-plan-subnav { top: 48px; padding: 0.5rem 1rem; }
+
+  /* Grids */
   .hc-form-grid { grid-template-columns: 1fr; }
   .hc-phase-select-grid { grid-template-columns: 1fr; }
   .hc-stat-grid { grid-template-columns: repeat(2, 1fr); }
-  .hc-days-grid { grid-template-columns: repeat(4, 1fr); }
   .hc-pillars { grid-template-columns: 1fr 1fr; }
   .hc-meal-grid { grid-template-columns: 1fr; }
   .hc-snack-grid { grid-template-columns: 1fr; }
-  .hc-nav-tab { padding: 1rem 0.6rem; font-size: 0.68rem; }
-  .hc-phase-badge { display: none; }
+  .hc-science-strip { grid-template-columns: repeat(2, 1fr); }
+  .hc-sleep-tips { grid-template-columns: 1fr; }
+
+  /* Weekly rhythm: 4 cols + wrap rather than 7 cramped cols */
+  .hc-days-grid { grid-template-columns: repeat(4, 1fr); }
+
+  /* Phase card header */
+  .hc-phase-hdr { flex-wrap: wrap; gap: 0.6rem; }
+  .hc-phase-hdr-dur { margin-left: 0; width: 100%; font-size: 0.7rem; }
+
+  /* Mindset rows: stack vertically on small screens */
+  .hc-mindset-item { flex-direction: column; gap: 0.2rem; }
+  .hc-mi-head { min-width: unset; }
+
+  /* Log list */
+  .hc-log-item { flex-direction: column; align-items: flex-start; gap: 0.25rem; }
+
+  /* Weight form */
+  .hc-weight-input-wrap { flex-direction: column; }
+  .hc-weight-submit { width: 100%; }
+
+  /* Profile */
+  .hc-profile-val { max-width: 55%; font-size: 0.8rem; }
+
+  /* Onboarding card */
+  .hc-onboard-card { padding: 1.8rem 1.2rem; }
+  .hc-onboard-screen { padding: 1.5rem 1rem; }
+
+  /* OTP digits */
+  .hc-magic-digits { gap: 0.45rem; }
+  .hc-magic-digit { width: 44px; height: 52px; font-size: 1.3rem; }
+
+  /* Philosophy / plan sections */
+  .hc-philosophy { padding: 1.2rem; }
+  .hc-meal-panels { padding: 1rem; }
+  .hc-focus-section { padding: 1.3rem; }
+  .hc-weekly-box { padding: 1.3rem; }
+  .hc-sleep-box { padding: 1.3rem; }
+  .hc-meal-intro-box { padding: 1.2rem 1.4rem; }
+
+  /* Toast clears bottom nav */
+  .hc-toast { right: 1rem; bottom: calc(4.5rem + env(safe-area-inset-bottom)); }
+
+  /* Coach actions wrap nicely */
+  .hc-coach-actions { gap: 0.35rem; }
+  .hc-coach-btn { font-size: 0.72rem; padding: 0.3rem 0.65rem; }
+}
+
+@media (max-width: 380px) {
+  .hc-magic-digit { width: 38px; height: 46px; font-size: 1.1rem; }
+  .hc-magic-digits { gap: 0.3rem; }
+  .hc-dash-greeting h1 { font-size: 1.6rem; }
+  .hc-pillars { grid-template-columns: 1fr; }
 }
