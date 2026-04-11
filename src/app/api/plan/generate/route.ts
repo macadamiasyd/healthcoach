@@ -13,12 +13,12 @@ export async function POST(request: Request) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { prompt } = await request.json()
+  const { prompt, maxTokens } = await request.json()
   if (!prompt) return NextResponse.json({ error: 'Missing prompt' }, { status: 400 })
 
   const msg = await client.messages.create({
     model: 'claude-sonnet-4-20250514',
-    max_tokens: 1000,
+    max_tokens: maxTokens || 1200,
     messages: [{ role: 'user', content: JSYS + '\n\n' + prompt }],
   })
 

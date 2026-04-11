@@ -25,11 +25,11 @@ function parseAIJson(raw: string): unknown {
   return JSON.parse(s.substring(start, ei + 1))
 }
 
-async function safeGen(prompt: string): Promise<unknown> {
+async function safeGen(prompt: string, maxTokens?: number): Promise<unknown> {
   const res = await fetch('/api/plan/generate', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ prompt }),
+    body: JSON.stringify({ prompt, maxTokens }),
   })
   if (!res.ok) throw new Error(`API error ${res.status}`)
   const d = await res.json()
@@ -99,7 +99,8 @@ export async function generateFullPlan(
       try {
         if (attempt > 0) await wait(2000)
         const r = (await safeGen(
-          `${focus} meals phase ${num} for: ${ps}\nExclude: ${profile.avoid_foods || 'nothing'}. In ${profile.location || 'their area'}.\n{"b":[{"n":"Meal Name","d":"Brief tip","g":"Badge","t":"protein"}],"l":[same format],"di":[same format],"tk":[same format]}\nExactly 6 per array (b,l,di,tk). t values: protein|energy|light|quick|mediterranean. d: max 8 words.`
+          `${focus} meals phase ${num} for: ${ps}\nExclude: ${profile.avoid_foods || 'nothing'}. In ${profile.location || 'their area'}.\n{"b":[{"n":"Meal Name","d":"Brief tip","g":"Badge","t":"protein"}],"l":[same format],"di":[same format],"tk":[same format]}\nExactly 6 per array (b,l,di,tk). t values: protein|energy|light|quick|mediterranean. d: max 8 words.`,
+          2000
         )) as { b?: unknown[]; l?: unknown[]; di?: unknown[]; tk?: unknown[] }
         const map = (arr: unknown[] = []) =>
           arr.map((x: unknown) => {
