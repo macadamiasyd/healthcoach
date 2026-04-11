@@ -125,9 +125,9 @@ export default function PlanPage() {
         {/* Phases */}
         {plan.phases?.length ? (
           <>
-            <div className="hc-section-label" style={{ marginTop: '2rem' }}>Your 4-Phase Programme</div>
-            <div className="hc-phases-intro">Your journey, <em>in phases</em></div>
-            <div className="hc-phases-desc">Each phase builds on the last. Progress at your own pace.</div>
+            <div className="hc-section-label" style={{ marginTop: '2rem' }}>The Four-Phase Roadmap</div>
+            <div className="hc-phases-intro">Four phases.<br /><em>No shocks. Just progress.</em></div>
+            <div className="hc-phases-desc">Each phase lasts 6–10 weeks. Move to the next only when the current phase feels automatic — not when the calendar says so.</div>
             {plan.phases.map((ph, i) => (
               <div className="hc-phase-card" key={i}>
                 <div className="hc-phase-hdr" style={{ background: PHASE_COLORS[i] || '#888' }}>
@@ -216,8 +216,10 @@ export default function PlanPage() {
 
         {/* Sleep advice */}
         {plan.sleepAdvice && (
+          <>
+            <div className="hc-section-label">Sleep: The Underrated Lever</div>
           <div className="hc-sleep-box">
-            <h3>💤 Sleep Strategy</h3>
+            <h3>💤 Why Sleep is Non-Negotiable for Your Goals</h3>
             <p>{plan.sleepAdvice.intro}</p>
             <div className="hc-sleep-tips">
               {plan.sleepAdvice.tips?.map((t, i) => (
@@ -225,6 +227,7 @@ export default function PlanPage() {
               ))}
             </div>
           </div>
+          </>
         )}
 
         <div className="hc-section-divider" />
